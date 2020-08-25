@@ -1,0 +1,1 @@
+Hephaestus is a simple C# attribute-driven IoC & dependency injection framework.

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge", "Forge\Forge.csproj", "{48828D96-9AC5-4AC7-9CF9-F8F123CBA831}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Test", "Forge.Test\Forge.Test.csproj", "{13BA300D-103F-4286-A209-00B2AB19957E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HephaestusDemo", "HephaestusDemo\HephaestusDemo.csproj", "{B32806D0-77AC-4EDD-880D-153BBD8032F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48828D96-9AC5-4AC7-9CF9-F8F123CBA831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48828D96-9AC5-4AC7-9CF9-F8F123CBA831}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48828D96-9AC5-4AC7-9CF9-F8F123CBA831}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48828D96-9AC5-4AC7-9CF9-F8F123CBA831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13BA300D-103F-4286-A209-00B2AB19957E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13BA300D-103F-4286-A209-00B2AB19957E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13BA300D-103F-4286-A209-00B2AB19957E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13BA300D-103F-4286-A209-00B2AB19957E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B32806D0-77AC-4EDD-880D-153BBD8032F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B32806D0-77AC-4EDD-880D-153BBD8032F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B32806D0-77AC-4EDD-880D-153BBD8032F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B32806D0-77AC-4EDD-880D-153BBD8032F2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
