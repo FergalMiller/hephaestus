@@ -68,7 +68,7 @@ namespace Forge
         private void InitialiseElementType(Type elementType)
         {
             if (_elementMap.ContainsElementForType(elementType)) throw new Exception($"Element already exists for type {elementType}");
-            if (elementType.GetCustomAttributes(typeof(Element), true).Length == 0) throw new Exception($"Type does not have Element attribute {elementType}");
+            if (!IsElement(elementType)) throw new Exception($"Type does not have Element attribute {elementType}");
             var elementInstance = ForgeNewInstance(elementType);
             _elementMap.AddElement(elementType, elementInstance);
         }
@@ -77,14 +77,15 @@ namespace Forge
         {
             foreach (var constructor in elementType.GetConstructors())
             {
-                if (constructor.GetCustomAttributes(typeof(ForgeConstruct), true).Length > 0)
+                if (IsForgeConstructor(constructor))
                 {
                     constructorInfo = constructor;
                     return true;
                 }
             }
 
-            constructorInfo = default;
+            //If not, set constructorInfo to a default constructor
+            constructorInfo = elementType.GetConstructors()[0];
             return false;
         }
 
@@ -160,6 +161,16 @@ namespace Forge
             InitialiseElementType(elementType);
             
             return _elementMap.GetElement(elementType);
+        }
+        
+        private bool IsElement(Type elementType)
+        {
+            return elementType.GetCustomAttributes(typeof(Element), true).Length > 0;
+        }
+        
+        private bool IsForgeConstructor(ConstructorInfo constructor)
+        {
+            return constructor.GetCustomAttributes(typeof(ForgeConstruct), true).Length > 0;
         }
 
         private bool TypeImplementsInterface(Type type, Type @interface)
