@@ -43,8 +43,11 @@
         <Compile Include="Controllers\ControllerB.cs" />
         <Compile Include="Database\DAO.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Providers\FooServiceProvider.cs" />
+        <Compile Include="Services\IFooService.cs" />
         <Compile Include="Services\ServiceA.cs" />
         <Compile Include="Services\ServiceB.cs" />
+        <Compile Include="Services\ServiceC.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Forge\Forge.csproj">

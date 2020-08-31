@@ -4,7 +4,7 @@ using HephaestusDemo.Database;
 namespace HephaestusDemo.Services
 {
     [Element]
-    public class ServiceB
+    public class ServiceB : IFooService
     {
         private DAO _dao;
         

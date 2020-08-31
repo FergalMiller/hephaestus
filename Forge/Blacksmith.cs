@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Forge.Attributes;
@@ -20,7 +19,7 @@ namespace Forge
             _elementMap = new ElementMap.ElementMap();
         }
 
-        public static Blacksmith Instance
+        public static IBlacksmith Instance
         {
             get
             {
@@ -34,20 +33,22 @@ namespace Forge
             }
         }
 
-        private IElementMap _elementMap;
+        private readonly IElementMap _elementMap;
+
+        private Type[] _elementTypes;
 
         public void WeldAssembly(Assembly assembly)
         {
-            var elementTypes = GetElementTypes(assembly);
-            InitialiseElementTypes(elementTypes);
+            _elementTypes = GetElementTypes(assembly);
+            InitialiseElementTypes();
         }
 
-        public object GetElement(Type elementType)
+        public IElementMap GetElementMap()
         {
-            return _elementMap.GetElement(elementType);
+            return _elementMap;
         }
 
-        private IEnumerable<Type> GetElementTypes(Assembly assembly)
+        private Type[] GetElementTypes(Assembly assembly)
         {
             return assembly
                 .GetTypes()
@@ -55,9 +56,9 @@ namespace Forge
                 .ToArray();
         }
 
-        private void InitialiseElementTypes(IEnumerable<Type> elementTypes)
+        private void InitialiseElementTypes()
         {
-            foreach (var elementType in elementTypes)
+            foreach (var elementType in _elementTypes)
             {
                 if (_elementMap.ContainsElementForType(elementType)) continue;
                 InitialiseElementType(elementType);
@@ -92,25 +93,78 @@ namespace Forge
             if (ElementHasForgeConstructor(elementType, out var constructorInfo))
             {
                 var constructorParameters = constructorInfo.GetParameters();
-                var elementArguments = new object[constructorParameters.Length];
-
-                var i = 0;
-                foreach (var parameter in constructorParameters)
-                {
-                    var parameterType = parameter.ParameterType;
-                    if (!_elementMap.ContainsElementForType(parameterType))
-                    {
-                        InitialiseElementType(parameterType);
-                    }
-
-                    elementArguments[i] = _elementMap.GetElement(parameterType);
-                    i++;
-                }
-
-                return Activator.CreateInstance(elementType, elementArguments);
+                var extractedArguments = GetInitialisedConstructorArguments(constructorParameters);
+                return Activator.CreateInstance(elementType, extractedArguments);
             }
             
             return Activator.CreateInstance(elementType);
+        }
+
+        private object[] GetInitialisedConstructorArguments(ParameterInfo[] constructorParameters)
+        {
+            var elementArguments = new object[constructorParameters.Length];
+
+            var i = 0;
+            foreach (var parameter in constructorParameters)
+            {
+                var parameterType = parameter.ParameterType;
+                if (TypeImplementsInterface(parameterType, typeof(ICollection)))
+                {
+                    elementArguments[i] = GenerateCollectionArgument(parameterType);
+                }
+                else
+                {
+                    elementArguments[i] = GetOrInitiateAndGetElement(parameterType);
+                }
+                
+                i++;
+            }
+
+            return elementArguments;
+        }
+
+        private ICollection GenerateCollectionArgument(Type type)
+        {
+            if (TypeImplementsInterface(type, typeof(IList)))
+            {
+                return GenerateListArgument(type);
+            }
+            
+            throw new Exception($"Cannot create injectable dependency for collection type {type}");
+        }
+
+        private IList GenerateListArgument(Type listType)
+        {
+            var parameterType = listType.GenericTypeArguments[0];
+            
+            var elements = _elementTypes
+                .Where(type => parameterType.IsAssignableFrom(type))
+                .Select(GetOrInitiateAndGetElement)
+                .ToList();
+
+            //Invokes default constructor for parameterised list type and populates with relevant elements
+            var argumentListConstructor = listType.GetConstructors()[0];
+            var list = (IList) argumentListConstructor.Invoke(new object[] { });
+            elements.ForEach(e => list.Add(e));
+            
+            return list;
+        }
+
+        private object GetOrInitiateAndGetElement(Type elementType)
+        {
+            if (_elementMap.ContainsElementForType(elementType))
+            {
+                return _elementMap.GetElement(elementType);
+            }
+            
+            InitialiseElementType(elementType);
+            
+            return _elementMap.GetElement(elementType);
+        }
+
+        private bool TypeImplementsInterface(Type type, Type @interface)
+        {
+            return type.GetInterfaces().Contains(@interface);
         }
     }
 }

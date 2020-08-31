@@ -11,6 +11,7 @@
         <AssemblyName>Forge</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,6 +45,7 @@
         <Compile Include="Blacksmith.cs" />
         <Compile Include="ElementMap\ElementMap.cs" />
         <Compile Include="ElementMap\IElementMap.cs" />
+        <Compile Include="ForgeType.cs" />
         <Compile Include="IBlacksmith.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
